@@ -73,7 +73,97 @@ p value = .28, if our samples are drawn from populations with same median there 
 No significant difference in medians (Mann-Whitney U; U =
 `r mwu$statistic`, p = `r round(mwu$p.value, 2)`)
 
-The medians of group A (M = 22.4 g) and group B (M = 31.2 g) did not differ significantly 
+Example text for reproting: "The medians of group A (M = 22.4 g) and group B (M = 31.2 g) did not differ significantly (Mann Whitney U, ...)."
 
+## Simple linear regression
+
+Two *continuous quantitative* variables that you are trying to understand the relationship between, and you think that a linear relationship makes sense.
+
+Use the `penguins` data from {palmerpenguins}, exploring flipper length (x) versus body mass (y)
+
+# Use View(penguins) to look at it 
+# Make an exploratory scatterplot of penguin flipper lenght (x-axis) versus body mass (y-axis)
+
+
+```{r}
+ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+```
+equation of a line is y = mx + b 
+mx = slope
+b = intercept
+or
+y = Beta1X + Beta0 + E
+bodymass(g) = Beta1(flipperlength(mm)) + B0
+
+### Find the model estimates (coefficients)
+
+Use the `lm()` function for linear model.
+
+body_mass_g ` <<<< tilde (not minus sign)
+
+```{r}
+penguin_lm <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
+
+```
+
+
+body_mass(g) = 49.69 (flipper_length(mm) -5780.8
+
+[g] = [g/mm][mm]
+
+on avg. we expect a 1 mm increase in flipper length for every 49.69 g increase on avg. 
+
+y intercept, -5780.8 is the mass of a penguin with flipper length of 0 mm
+
+
+use square brakets for indexing to pull one value
+
+
+Model coefficients: `r penguin_lm$coefficients`
+Flipper length coefficient: `r penguin_lm$coefficients[2]`
+
+
+### Use `broom::tidy()` <- tidy(penguin_lm)
+
+```{r}
+penguin_lm_tidy <- tidy(penguin_lm)
+
+penguin_lm_tidy
+
+penguin_lm_tidy$estimate[2]
+```
+
+### Use broom::glance() to get output of model fit and statistical significance 
+
+```{r}
+penguin_lm_glance <- glance(penguin_lm)
+
+penguin_lm_glance
+```
+
+### Use equatiomatic:: extract_eq() to return model in LaTeX
+
+```{r}
+extract_eq(model = penguin_lm)
+```
+
+^^ makes generic formula
+
+```{r}
+extract_eq(model = penguin_lm, us_coefs = TRUE)
+```
+
+LaTeX is language for math
+
+$\frac{apples}{bananas}$ 
+
+### Use plot9) function to automatically produce diagnotstic plots
+
+```{r}
+plot(penguin_lm)
+```
 
 
