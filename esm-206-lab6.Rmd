@@ -1,0 +1,79 @@
+---
+title: "Lab 6"
+author: "Alissa Patterson"
+date: "11/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+library(broom)
+library(equatiomatic)
+```
+
+## Rank based test example
+
+Mann-Whitney U (non-parametric alternative to an unpaired 2-sample t-test). 
+
+H0 Null: ranks are equal (or medians)
+HA Alternative: Ranks are not equal (or medians are not equal)
+
+Are our samples so different from this null that we think they provide enough evidence that we can reject this null.
+
+### Create samples
+
+`set.seed()` to create "pseudorandom, but reproducible samples" 
+
+```{r}
+set.seed(1414)
+gp_1 <- sample.int(20, size = 15, replace = TRUE)
+
+set.seed(1424)
+gp_2 <- sample.int(30, size = 15, replace = TRUE)
+```
+
+
+Take a quick look at the distributions using `hist()`.
+
+```{r}
+hist(gp_1)
+hist(gp_2)
+```
+
+Try a t-test so we can compare the results:
+
+```{r}
+ttest <- t.test(gp_1, gp_2)
+
+# If these data were paired, I can just add the argument `paired = "TRUE"` within the t.test ()
+```
+
+p value of .198 means that if our samples are drawn from populations with the same mean (if the null is true), there is is `r round(ttest$p.value, 2)` probability of finding sample means *at least as different* as mine by random chance.
+
+Retain = fail to reject 
+
+[A more comprehensive explanation of differences between groups...actually means, data spread, effect size]...there is no significant difference (t(df) = t-statistic value, p = ). In order to reject, our p would've had to be less than 5%.
+
+### Mann Whitney U rank based test
+
+We use the `wilcox.test()` function to perform a two-sample rank-based test.
+
+```{r}
+mwu <- wilcox.test(gp_1, gp_2)
+
+```
+
+H0 Null: ranks are equal (or medians)
+HA Alternative: Ranks are not equal (or medians are not equal)
+
+p value = .28, if our samples are drawn from populations with same median there is 28% of finding sample medians at least as different as ours by random chance. Cannot reject null. 
+
+No significant difference in medians (Mann-Whitney U; U =
+`r mwu$statistic`, p = `r round(mwu$p.value, 2)`)
+
+The medians of group A (M = 22.4 g) and group B (M = 31.2 g) did not differ significantly 
+
+
+
